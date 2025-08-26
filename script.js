@@ -42,8 +42,24 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     ];
 
+    // --- SELECTORES DEL DOM ---
     let cart = JSON.parse(localStorage.getItem('cart')) || [];
-    // ... (resto de selectores del DOM sin cambios) ...
+    const productGrid = document.getElementById('product-grid');
+    const cartCount = document.getElementById('cart-count');
+    
+    // Elementos del Modal del Carrito
+    const cartModal = document.getElementById('cart-modal');
+    const closeCartModal = document.querySelector('#cart-modal .close-button'); // Selector más específico
+    const cartIcon = document.getElementById('cart-icon');
+    const cartItemsContainer = document.getElementById('cart-items');
+    const cartTotal = document.getElementById('cart-total');
+    const cartView = document.getElementById('cart-view');
+    const paymentView = document.getElementById('payment-view');
+    const checkoutBtn = document.getElementById('checkout-btn');
+    const backToCartBtn = document.getElementById('back-to-cart-btn');
+    const paymentTotal = document.getElementById('payment-total');
+
+    // Elementos del Modal de Detalles del Producto
     const productDetailModal = document.getElementById('product-detail-modal');
     const closeProductModal = document.getElementById('close-product-modal');
     const modalProductBrand = document.getElementById('modal-product-brand');
@@ -55,21 +71,37 @@ document.addEventListener('DOMContentLoaded', () => {
     const modalProductLongDescription = document.getElementById('modal-product-long-description');
     const modalAddToCartBtn = document.getElementById('modal-add-to-cart-btn');
 
-    function renderProducts() { /* ... sin cambios ... */ }
+    // --- FUNCIONES ---
 
-    // --- FUNCIÓN DE MODAL DE PRODUCTO (TOTALMENTE REESCRITA) ---
+    function renderProducts() {
+        productGrid.innerHTML = ''; 
+        products.forEach(product => {
+            const productCardHTML = `
+                <div class="product-card">
+                    <div class="product-clickable-area" data-id="${product.id}">
+                        <img src="${product.images[0]}" alt="${product.name}">
+                        <div class="product-info">
+                            <h3>${product.name}</h3>
+                            <p class="product-price">$${product.price}</p>
+                        </div>
+                    </div>
+                    <button class="add-to-cart-btn" data-id="${product.id}">Añadir al Carrito</button>
+                </div>
+            `;
+            productGrid.innerHTML += productCardHTML;
+        });
+    }
+
     function openProductDetailModal(productId) {
         const product = products.find(p => p.id === productId);
         if (!product) return;
 
-        // Poblar información de texto
         modalProductBrand.textContent = product.brand;
         modalProductName.textContent = product.name;
         modalProductPrice.textContent = `$${product.price}`;
         modalProductLongDescription.textContent = product.longDescription;
         modalAddToCartBtn.dataset.id = product.id;
         
-        // Poblar especificaciones
         modalProductSpecs.innerHTML = `
             <li><strong>Tallas Disponibles:</strong> <span>${product.sizes}</span></li>
             <li><strong>Colores:</strong> <span>${product.colors}</span></li>
@@ -77,19 +109,16 @@ document.addEventListener('DOMContentLoaded', () => {
             <li><strong>Uso Recomendado:</strong> <span>${product.type}</span></li>
         `;
 
-        // Poblar galería de imágenes
-        modalProductMainImage.src = product.images[0]; // Cargar imagen principal
-        modalProductThumbnails.innerHTML = ''; // Limpiar miniaturas antiguas
+        modalProductMainImage.src = product.images[0];
+        modalProductThumbnails.innerHTML = '';
         product.images.forEach((imgSrc, index) => {
             const thumb = document.createElement('img');
             thumb.src = imgSrc;
             thumb.alt = `Vista ${index + 1} de ${product.name}`;
-            thumb.classList.toggle('active', index === 0); // Activar la primera miniatura
+            thumb.classList.toggle('active', index === 0);
             
-            // Event listener para cambiar la imagen principal al hacer clic
             thumb.addEventListener('click', () => {
                 modalProductMainImage.src = imgSrc;
-                // Actualizar la clase 'active' en las miniaturas
                 document.querySelectorAll('.thumbnail-container img').forEach(t => t.classList.remove('active'));
                 thumb.classList.add('active');
             });
@@ -99,9 +128,130 @@ document.addEventListener('DOMContentLoaded', () => {
         productDetailModal.style.display = 'block';
     }
 
-    // --- OTRAS FUNCIONES Y EVENT LISTENERS (sin cambios significativos) ---
-    // ... (El resto del código JavaScript de la respuesta anterior funciona igual) ...
-    // Asegúrate de copiar el resto de las funciones (addToCart, removeFromCart, etc.)
-    // y los event listeners del script anterior para mantener la funcionalidad del carrito.
+    // --- Funciones del Carrito ---
+    function addToCart(productId) {
+        const product = products.find(p => p.id === parseInt(productId));
+        const cartItem = cart.find(item => item.id === parseInt(productId));
+
+        if (cartItem) {
+            cartItem.quantity++;
+        } else {
+            cart.push({ ...product, quantity: 1 });
+        }
+        
+        saveCart();
+        updateCartUI();
+    }
+    
+    function removeFromCart(productId) {
+        cart = cart.filter(item => item.id !== productId);
+        saveCart();
+        updateCartUI();
+    }
+
+    function saveCart() {
+        localStorage.setItem('cart', JSON.stringify(cart));
+    }
+
+    function updateCartUI() {
+        updateCartCount();
+        if (cartModal.style.display === 'block') {
+            updateCartModal();
+        }
+    }
+    
+    function updateCartCount() {
+        const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+        cartCount.textContent = totalItems;
+    }
+    
+    function updateCartModal() {
+        cartItemsContainer.innerHTML = '';
+        if (cart.length === 0) {
+            cartItemsContainer.innerHTML = '<p style="color: var(--color-texto-secundario);">Tu carrito está vacío.</p>';
+            cartTotal.textContent = '0.00';
+            checkoutBtn.disabled = true;
+            checkoutBtn.style.opacity = '0.5';
+            return;
+        }
+        
+        checkoutBtn.disabled = false;
+        checkoutBtn.style.opacity = '1';
+
+        let total = 0;
+        cart.forEach(item => {
+            const itemElement = `
+                <div class="cart-item">
+                    <img src="${item.images[0]}" alt="${item.name}">
+                    <div class="cart-item-info">
+                        <strong>${item.name}</strong>
+                        <p>Cantidad: ${item.quantity} | Subtotal: $${(item.price * item.quantity).toFixed(2)}</p>
+                    </div>
+                    <button class="remove-item-btn" data-id="${item.id}">&times;</button>
+                </div>
+            `;
+            cartItemsContainer.innerHTML += itemElement;
+            total += item.price * item.quantity;
+        });
+
+        cartTotal.textContent = total.toFixed(2);
+        paymentTotal.textContent = total.toFixed(2);
+    }
+
+    // --- EVENT LISTENERS ---
+    cartIcon.addEventListener('click', () => {
+        cartView.classList.remove('hidden');
+        paymentView.classList.add('hidden');
+        updateCartModal(); // Actualizar contenido al abrir
+        cartModal.style.display = 'block';
+    });
+
+    closeCartModal.addEventListener('click', () => cartModal.style.display = 'none');
+    closeProductModal.addEventListener('click', () => productDetailModal.style.display = 'none');
+    
+    modalAddToCartBtn.addEventListener('click', (event) => {
+        const productId = event.target.dataset.id;
+        addToCart(productId);
+        productDetailModal.style.display = 'none';
+    });
+
+    window.addEventListener('click', (event) => {
+        if (event.target == cartModal) cartModal.style.display = 'none';
+        if (event.target == productDetailModal) productDetailModal.style.display = 'none';
+    });
+
+    document.body.addEventListener('click', (event) => {
+        const clickableArea = event.target.closest('.product-clickable-area');
+        if (clickableArea) {
+            const productId = parseInt(clickableArea.dataset.id);
+            openProductDetailModal(productId);
+        }
+
+        const addToCartBtn = event.target.closest('.add-to-cart-btn');
+        if (addToCartBtn && !addToCartBtn.id.includes('modal')) {
+            const productId = parseInt(addToCartBtn.dataset.id);
+            addToCart(productId);
+        }
+
+        const removeItemBtn = event.target.closest('.remove-item-btn');
+        if (removeItemBtn) {
+            const productId = parseInt(removeItemBtn.dataset.id);
+            removeFromCart(productId);
+        }
+    });
+    
+    checkoutBtn.addEventListener('click', () => {
+        cartView.classList.add('hidden');
+        paymentView.classList.remove('hidden');
+    });
+
+    backToCartBtn.addEventListener('click', () => {
+        paymentView.classList.add('hidden');
+        cartView.classList.remove('hidden');
+    });
+
+    // --- INICIALIZACIÓN ---
+    renderProducts();
+    updateCartUI();
 
 });
