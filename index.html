@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Boxing Store 1971 - Equipamiento de Élite</title>
+    <title>Boxing Store 1971</title>
     <link rel="stylesheet" href="style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
 </head>
-<body class="dark-theme">
+<body>
 
     <header class="main-header">
         <div class="container">
@@ -35,34 +35,20 @@
 
     <footer class="main-footer"><div class="container"><p>&copy; 2025 Boxing Store 1971. Todos los derechos reservados.</p></div></footer>
 
-    <div id="cart-modal" class="modal">
-        </div>
+    <div id="cart-modal" class="modal"><div class="modal-content"><span class="close-button" id="close-cart-modal">&times;</span><div id="cart-view"><h2>Tu Carrito de Compras</h2><div id="cart-items"><p>Tu carrito está vacío.</p></div><div class="cart-total"><strong>Total: $<span id="cart-total">0</span></strong></div><button id="checkout-btn" class="checkout-button">Finalizar Compra</button></div><div id="payment-view" class="hidden"><h2>Instrucciones de Pago</h2><p>Para completar tu compra, realiza el pago y envía el comprobante a nuestro WhatsApp.</p><div class="payment-details"><div class="payment-method"><h3>Consignación Bancolombia</h3><p><strong>Cuenta de Ahorros:</strong> 31687787962</p><p><strong>Titular:</strong> Boxing Store 1971</p><p><strong>Total a pagar: $<span id="payment-total">0</span></strong></p></div><div class="payment-method"><h3>O paga con QR</h3><img src="qr-bancolombia.jpg" alt="Código QR Bancolombia" class="qr-code"></div></div><button id="back-to-cart-btn" class="secondary-button">Volver al Carrito</button></div></div></div>
     
     <div id="product-detail-modal" class="modal">
         <div class="modal-content product-detail-content">
             <span class="close-button" id="close-product-modal">&times;</span>
             <div class="product-detail-layout">
-                <div class="product-gallery">
-                    <div class="main-image-container">
-                        <img id="modal-product-main-image" src="" alt="Imagen principal del producto">
-                    </div>
-                    <div class="thumbnail-container" id="modal-product-thumbnails">
-                        </div>
+                <div class="product-detail-image">
+                    <img id="modal-product-image" src="" alt="Imagen del producto">
                 </div>
                 <div class="product-detail-info">
-                    <p id="modal-product-brand" class="product-brand"></p>
                     <h2 id="modal-product-name"></h2>
-                    <p id="modal-product-price" class="product-price-modal"></p>
-                    
-                    <ul class="product-specs" id="modal-product-specs">
-                        </ul>
-                    
+                    <p id="modal-product-price" class="product-price"></p>
+                    <p id="modal-product-description"></p>
                     <button id="modal-add-to-cart-btn" class="add-to-cart-btn">Añadir al Carrito</button>
-                    
-                    <div class="description-section">
-                        <h3>Descripción del Producto</h3>
-                        <p id="modal-product-long-description"></p>
-                    </div>
                 </div>
             </div>
         </div>
