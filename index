@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Boxing Store 1971</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <header class="main-header">
+        <div class="container">
+            <img src="logo.jpg" alt="Boxing Store 1971 Logo" class="logo">
+            <nav>
+                <a href="#products">Productos</a>
+                <a href="#about">Nosotros</a>
+                <a href="#contact">Contacto</a>
+            </nav>
+            <div class="cart-icon-wrapper" id="cart-icon">
+                🛒
+                <span id="cart-count">0</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <section class="hero">
+            <h1>Equipamiento de Élite para Campeones</h1>
+            <p>Desde 1971, forjando leyendas en el ring.</p>
+        </section>
+
+        <section id="products">
+            <h2>Nuestros Productos</h2>
+            <div class="product-grid" id="product-grid">
+                </div>
+        </section>
+    </main>
+
+    <footer class="main-footer">
+        <p>&copy; 2025 Boxing Store 1971. Todos los derechos reservados.</p>
+    </footer>
+
+    <div id="cart-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <h2>Tu Carrito de Compras</h2>
+            <div id="cart-items">
+                <p>Tu carrito está vacío.</p>
+            </div>
+            <div class="cart-total">
+                <strong>Total: $<span id="cart-total">0</span></strong>
+            </div>
+            <button class="checkout-button">Finalizar Compra</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
