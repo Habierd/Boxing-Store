@@ -1,2 +1,2 @@
-# bs1971-3
-tercera version experimental
+# Boxing-Store
+Tienda Oficial "Boxing Store 1971"
